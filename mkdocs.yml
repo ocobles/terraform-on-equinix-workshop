@@ -1,0 +1,65 @@
+site_name: "Workshop: Terraform on Equinix"
+
+repo_url: https://github.com/equinix-labs/terraform-on-equinix-workshop
+repo_name: equinix-labs/terraform-on-equinix-workshop
+edit_uri: blob/main/docs
+
+extra_css:
+  - stylesheets/extra.css
+
+theme:
+  name: material
+
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  icon:
+    logo: simple/equinixmetal
+  favicon: images/favicon.svg
+
+  features:
+    - navigation.top
+    - search.highlight
+    - navigation.footer
+    - content.code.copy
+
+extra:
+  social:
+    - icon: simple/equinixmetal
+      link: https://deploy.equinix.com
+    - icon: fontawesome/brands/twitter 
+      link: https://twitter.com/@equinixmetal
+    - icon: fontawesome/brands/github
+      link: https://github.com/equinix-labs
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/@EquinixDevelopers
+
+plugins:
+  - search
+  - glightbox
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.betterem
+  - pymdownx.critic
+  - pymdownx.highlight:
+      anchor_linenums: true
+      auto_title: true
+  - pymdownx.superfences
+  - pymdownx.keys
