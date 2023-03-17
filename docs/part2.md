@@ -22,7 +22,7 @@ Some providers requires some settings (credentials, a default project or region,
 
 Create a `main.tf` file to configure the provider. Insert the code below and keep the `auth_token` as is, we will update it later in this workshop
 
-```hcl
+```terraform
 terraform {
   required_providers {
     equinix = {
@@ -46,7 +46,7 @@ provider "equinix" {
 
 Define a new metal project a set your organization ID
 
-```hcl
+```terraform
 resource "equinix_metal_project" "project" {
   name = "Terraform Workshop"
   organization_id = "someEquinixMetalOrgId"
@@ -55,7 +55,7 @@ resource "equinix_metal_project" "project" {
 
 Add a new Equinix Metal device (baremetal server) with an implicit dependency in `project_id`
 
-```hcl
+```terraform
 resource "equinix_metal_device" "device" {
   hostname         = "tf-device"
   plan             = "c3.small.x86"
@@ -68,7 +68,7 @@ resource "equinix_metal_device" "device" {
 
 Add a new Equinix Metal project SSH key. Insert the code below and keep the ssh_key as is, we will update it later in this workshop
 
-```hcl
+```terraform
 resource "equinix_metal_project_ssh_key" "public_key" {
   name       = "terraform-rsa"
   public_key = "someRsaSshKeyContent"
@@ -78,7 +78,7 @@ resource "equinix_metal_project_ssh_key" "public_key" {
 
 Use terraform `TLS` provider to create an OpenSSH formatted private key
 
-```hcl
+```terraform
 resource "tls_private_key" "ssh_key_pair" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -89,7 +89,7 @@ resource "tls_private_key" "ssh_key_pair" {
 
 Use terraform `local` provider to store the private key
 
-```hcl
+```terraform
 resource "local_file" "private_key" {
   content         = chomp(tls_private_key.ssh_key_pair.private_key_pem)
   filename        = pathexpand(format("~/.ssh/%s", "equinix-metal-terraform-rsa"))
@@ -99,7 +99,7 @@ resource "local_file" "private_key" {
 
 Update `equinix_metal_project_ssh_key.public_key` to reference the public key
 
-```hcl
+```terraform
 resource "equinix_metal_project_ssh_key" "public_key" {
   ...
   public_key = chomp(tls_private_key.ssh_key_pair.public_key_openssh)
@@ -110,7 +110,7 @@ resource "equinix_metal_project_ssh_key" "public_key" {
  
 If you create a new device in a project, all the keys of the project's collaborators will be injected to the device. Add `depends_on` in the device resource to make sure the key is created before the device
 
-```hcl
+```terraform
 resource "equinix_metal_device" "device" {
   ...
   depends_on = [ equinix_metal_project_ssh_key.public_key ]
@@ -121,7 +121,7 @@ resource "equinix_metal_device" "device" {
 
 Create an `outputs.tf` file to expose some computed attributes that you will need later
 
-```hcl
+```terraform
 output "project_id" {
   value = equinix_metal_project.project.id
 }
@@ -139,7 +139,7 @@ output "device_public_ip" {
 
 Create a `variables.tf` file and define some useful inputs
 
-```hcl
+```terraform
 variable "plan" {
   type        = string
   description = "device type/size"
@@ -161,7 +161,7 @@ variable "os" {
 
 Update `main.tf` to start using these new variables
 
-```hcl
+```terraform
 resource "equinix_metal_device" "device" {
   hostname         = "tf-device"
   plan             = var.plan
